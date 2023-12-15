@@ -4,10 +4,10 @@ COPY . .
 RUN go build \
     -trimpath \
     -ldflags "-s -w -extldflags '-static'" \
-    -o /tmp/helloworld \
+    -o /usr/local/bin/helloworld \
     main.go
 
-FROM scratch
-COPY --from=build /tmp/helloworld ./helloworld
-ENTRYPOINT [ "./helloworld" ]
+FROM alpine:latest
+COPY --from=build /usr/local/bin/helloworld /usr/local/bin/helloworld
+ENTRYPOINT [ "/usr/local/bin/helloworld" ]
 EXPOSE 8080
