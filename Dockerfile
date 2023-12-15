@@ -1,13 +1,14 @@
 FROM golang:latest AS build
 
+WORKDIR /go/src/github.com/heavywombat/dummy-repo
 COPY . .
 RUN go build \
     -trimpath \
     -ldflags "-s -w -extldflags '-static'" \
-    -o /usr/local/bin/helloworld \
+    -o /tmp/helloworld \
     main.go
 
-FROM alpine:latest
-COPY --from=build /usr/local/bin/helloworld /usr/local/bin/helloworld
-ENTRYPOINT [ "/usr/local/bin/helloworld" ]
+FROM scratch
+COPY --from=build /tmp/helloworld ./helloworld
+ENTRYPOINT ["./helloworld"]
 EXPOSE 8080
