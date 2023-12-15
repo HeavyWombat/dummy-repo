@@ -1,14 +1,13 @@
-FROM golang:latest AS build
+FROM ghcr.io/shipwright-io/shipwright-samples/golang:1.18 AS build
 
-WORKDIR /go/src/github.com/heavywombat/dummy-repo
-COPY . .
+COPY main.go .
+ENV CGO_ENABLED=0
 RUN go build \
-    -trimpath \
     -ldflags "-s -w -extldflags '-static'" \
     -o /tmp/helloworld \
     main.go
 
 FROM scratch
 COPY --from=build /tmp/helloworld ./helloworld
-ENTRYPOINT ["./helloworld"]
+ENTRYPOINT [ "./helloworld" ]
 EXPOSE 8080
