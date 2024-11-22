@@ -7,7 +7,6 @@ import (
 	"net/http"
 	"os"
 	"os/signal"
-	"runtime"
 	"strconv"
 	"syscall"
 )
@@ -24,10 +23,15 @@ func main() {
 		}
 	}
 
+	name := "undef"
+	if strValue, ok := os.LookupEnv("NAME"); ok {
+		name = strValue
+	}
+
 	srv := &http.Server{Addr: fmt.Sprintf(":%d", port)}
 	go func() {
 		http.HandleFunc("/", func(w http.ResponseWriter, _ *http.Request) {
-			fmt.Fprintf(w, "Hello, World! I am using %s by the way.", runtime.Version())
+			fmt.Fprintf(w, "Hello, %s!", name)
 		})
 
 		if err := srv.ListenAndServe(); err != http.ErrServerClosed {

@@ -1,6 +1,6 @@
-FROM ghcr.io/shipwright-io/shipwright-samples/golang:1.18 AS build
+FROM ghcr.io/shipwright-io/shipwright-samples/golang:1.22 AS build
 
-COPY main.go .
+COPY ../common/main.go .
 ENV CGO_ENABLED=0
 RUN go build \
     -ldflags "-s -w -extldflags '-static'" \
@@ -9,5 +9,6 @@ RUN go build \
 
 FROM scratch
 COPY --from=build /tmp/helloworld ./helloworld
+ENV NAME=foo
 ENTRYPOINT [ "./helloworld" ]
 EXPOSE 8080
